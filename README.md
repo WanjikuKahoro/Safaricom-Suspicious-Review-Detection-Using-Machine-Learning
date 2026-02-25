@@ -1,4 +1,3 @@
-hh
 # Multilingual Suspicious Review Detection (Kenya)  
 **Character-level NLP + behavioural feature engineering for detecting suspicious app-store reviews (English, Swahili, Sheng).**
 
@@ -6,7 +5,7 @@ This project builds and evaluates a machine learning pipeline to flag **potentia
 - **Textual signals** (character n-grams for multilingual + code-mixed text)
 - **Behavioural signals** (burst activity, helpful-vote patterns, timing)
 - **Structural writing patterns** (length, punctuation/emoji density, repetition)
-- **Rating–sentiment inconsistencies** (e.g., 1⭐ text that looks strongly positive)
+- **Rating–sentiment inconsistencies** (e.g., 1* text that looks strongly positive)
 
 The work is implemented in the notebook: **`Emma.ipynb`**.
 
