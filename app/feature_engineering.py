@@ -1,6 +1,7 @@
 # app/feature_engineering.py
 import re
 import pandas as pd
+from numpy import (exp, inf, pi, sqrt, floor, sin, cos, around)
 
 # --- Text cleaning (matches your notebook intent) ---
 def clean_text_keep_emojis(text: str) -> str:
