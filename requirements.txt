@@ -1,9 +1,6 @@
-numpy==1.23.5
-fastapi
-uvicorn
 streamlit
 pandas
-joblib
 scikit-learn
-requests
+joblib
+numpy<1.24
 plotly
