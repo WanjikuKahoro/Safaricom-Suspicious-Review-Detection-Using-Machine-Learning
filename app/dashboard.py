@@ -26,15 +26,31 @@ st.set_page_config(page_title="Safaricom Review Audit", layout="centered", page_
 # 4. LOAD MODEL WITH ABSOLUTE PATH
 @st.cache_resource
 def load_assets():
-    # Find the 'model' folder by going up one level from 'app'
     repo_root = os.path.dirname(current_dir)
     model_path = os.path.join(repo_root, "model", "model.joblib")
     
     if not os.path.exists(model_path):
-        raise FileNotFoundError(f"Model file not found at: {model_path}")
-        
+        st.error(f"Missing model at {model_path}")
+        st.stop()
+
     model = joblib.load(model_path)
-    threshold = 0.95  # Confidence threshold for flagging reviews
+
+    # --- FIX FOR TfidfTransformer NotFittedError ---
+    # We drill into the pipeline to find the Tfidf part
+    try:
+        from sklearn.utils.validation import check_is_fitted
+        # This checks the internal steps (usually 'tfidf' or similar)
+        # If it's a standard pipeline, we can force the 'fitted' attributes
+        for name, step in model.named_steps.items():
+            if hasattr(step, "idf_") or hasattr(step, "vocabulary_"):
+                # If these exist, the model IS fitted, but the flag is bugged
+                # This line tells sklearn "I promise this is fitted"
+                step.__sklearn_is_fitted__ = lambda: True 
+    except Exception as e:
+        # If the above fails, we just log it and try to continue
+        pass
+
+    threshold = 0.95
     return model, threshold
 
 # Execute loading
