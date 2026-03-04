@@ -14,6 +14,15 @@ st.write("sklearn:", sklearn.__version__)
 st.write("joblib:", joblib.__version__)
 st.write("✅ dashboard.py started")
 
+# Fix compatibility for old sklearn ColumnTransformer objects
+def fix_old_column_transformer(model):
+    try:
+        pre = model.named_steps.get("pre", None)
+        if pre is not None and not hasattr(pre, "verbose_feature_names_out"):
+            pre.verbose_feature_names_out = True
+    except Exception:
+        pass
+    return model
 # NumPy compatibility (optional)
 if not hasattr(np, "int"):
     np.int = int
@@ -33,23 +42,15 @@ PROJECT_ROOT = BASE_DIR.parent   # go from app/ → project root
 
 @st.cache_resource
 def load_assets():
-    model_path = PROJECT_ROOT / "model" / "model_clean.joblib"
-    thresh_path = PROJECT_ROOT / "model" / "threshold.joblib"
+    model_path = "model/model_clean.joblib"
+    thresh_path = "model/threshold.joblib"
 
     model = joblib.load(model_path)
+    model = fix_old_column_transformer(model)   # <-- ADD THIS LINE
+
     threshold = float(joblib.load(thresh_path))
 
-    # normalize threshold (handles numpy scalar/array)
-    try:
-        threshold = float(threshold)
-    except TypeError:
-        threshold = float(threshold[0])
-
-    # sanity: ensure fitted
-    check_is_fitted(model.named_steps["clf"])
-
     return model, threshold
-
 try:
     model, threshold = load_assets()
 
