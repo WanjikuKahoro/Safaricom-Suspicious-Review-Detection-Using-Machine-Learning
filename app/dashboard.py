@@ -4,15 +4,6 @@ import pandas as pd
 import os
 import sys
 import numpy as np
-from sklearn.utils.validation import check_is_fitted
-
-
-import streamlit as st
-import joblib
-import pandas as pd
-import os
-import sys
-import numpy as np
 from pathlib import Path
 from sklearn.utils.validation import check_is_fitted
 
@@ -31,13 +22,15 @@ from feature_engineering import build_features
 st.set_page_config(page_title="Safaricom Review Audit", layout="centered", page_icon="🛡️")
 
 BASE_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = BASE_DIR.parent   # go from app/ → project root
 
 @st.cache_resource
 def load_assets():
-    model_path = BASE_DIR / "model" / "model_clean.joblib"
-    thresh_path = BASE_DIR / "model" / "threshold.joblib"
+    model_path = PROJECT_ROOT / "model" / "model_clean.joblib"
+    thresh_path = PROJECT_ROOT / "model" / "threshold.joblib"
+
     model = joblib.load(model_path)
-    threshold = joblib.load(thresh_path)
+    threshold = float(joblib.load(thresh_path))
 
     # normalize threshold (handles numpy scalar/array)
     try:
