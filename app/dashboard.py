@@ -45,7 +45,7 @@ def load_assets():
         threshold = float(threshold[0])
 
     # sanity: ensure fitted
-    check_is_fitted(model)
+    check_is_fitted(model.named_steps["clf"])
 
     return model, threshold
 
